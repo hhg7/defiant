@@ -92,17 +92,14 @@ Defiant is set up to automatically identify and read the following input formats
 Example:	chr1	762	763	0.1764	37
 
 Column1:	chromosome, which is a string.
-
 Column2:	nucleotide, an unsigned integer in [0,4294967295].
-
 Column3:	ignored.
-
 Column4:	methylation percent, a floating point in [0,1].
-
 Column5:	coverage, an unsigned integer, an unsigned integer in [0,4294967295]
 
 ## Input Type 2	known for MethylKit input
 Example:	chr1.762	chr1	762	R	10000	17.64	82.36
+
 Column1:	unique name, this is ignored.
 Column2:	chromosome, which is a string.
 Column3:	nucleotide, an unsigned integer [0,4294967295].
@@ -113,6 +110,7 @@ Column7:	cytosine percent, a floating point in [0,100].
 
 ## Input Type 3
 Example:	chr1	762	763	0.1764
+
 Column1:	chromosome, which is a string.
 Column2:	nucleotide, an unsigned integer [0,4294967295].
 Column3:	ignored.
@@ -120,6 +118,7 @@ Column4:	methylation percent, a floating point in [0,1].
 
 ## Input Type 4
 Example:	chr1	762	6	14
+
 Column1:	chromosome, which is a string.
 Column2:	nucleotide, an unsigned integer in [0,4294967295].
 Column3:	methylated C count, an unsigned integer in [0,4294967295].
@@ -128,6 +127,7 @@ Column4:	C count, an unsigned integer [0,4294967295].
 ## Input Type 5	Bismark coverage2cytosine format:
 <chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context>//Bismark coverage2cytosine format
 Example:	chr1	762	763	+	17	64	CG	CGA
+
 Column1:	chromosome, which is a string.
 Column2:	nucleotide/start position, an unsigned integer [0,4294967295].
 Column3:	strand.
@@ -139,6 +139,7 @@ Column7:	C-context, e.g. CGA, CGT, etc.
 ## Input Type 6	Bismark coverage2cytosine format:
 <chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated>
 Example:	chr1	762	763	0.265625	17	76
+
 Column1:	chromosome, which is a string.
 Column2:	nucleotide/start position, an unsigned integer in [0,4294967295].
 Column3:	nucleotide/end position, an unsigned integer in [0,4294967295].
@@ -148,6 +149,7 @@ Column6:	C count, an unsigned integer in [0,4294967295].
 
 ## Input Type 7	HELP-Tag data.  This can have a header.
 Example:	1 chr1	762	763	0.2656	0.1776
+
 Column1:	ignored
 Column2:	chromosome, a string.
 Column3:	position, an unsigned integer in [0,4294967295].
@@ -156,6 +158,7 @@ Column5:	Conf. ignored.
 
 ## Input Type 8	(EPP)Epigenome Processing Pipeline
 Example:	chr1	762	763	'17/76'	999	+
+
 Column1:	chromosome, which is a string.
 Column2:	start nucleotide, an unsigned integer in [0,4294967295].
 Column3:	end nucleotide, an unsigned integer in [0,4294967295].
@@ -163,6 +166,7 @@ Column4:	methylation percent as a fraction, two unsigned integers.  Coverage is 
 
 ## Input Type 9	Bsmooth Input
 Example:	X	762	+	CG	17	76
+
 Column1:	chromosome, which is a string.
 Column2:	Nucleotide, an unsigned integer in [0,4294967295].
 Column3:	strand sense, ignored.
@@ -172,6 +176,7 @@ Column6:	C count, an unsigned integer in [0,4294967295].
 
 ## Input Type 10	BisSNP (found in RnBeads)
 Example:	X	762	763	17.76	82.24	10000	762	763	180,60,0
+
 Column1:	chromosome, which is a string.Column2:	Nucleotide start, an unsigned integer in [0,4294967295].
 Column3:	Nucleotide end, an unsigned integer in [0,4294967295].
 Column4:	methylation value in [0:100].
@@ -192,16 +197,17 @@ control_vs_case_c10_CpN5_d1_p0.01_P10.tsv
 • If the Gap, "-G" option, is altered, -G<gap> will be in the output. If there are any allowed consecutive skips, this will be
 indicated in the filename by " S2" if there are 2 allowed skips, for example.
 
-Running Defiant
+# Running Defiant
 
-Simplest possible case:
+## Simplest possible case:
+
 1. ./defiant -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
-Label each sample.
+## Label each sample.
 2. ./defiant -L control,case -l my_name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
-3. Annotation:
+## Annotation:
 ./defiant -a refFlat.txt -L control,case -l my ̇name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
-4. Generate figures with "CpG" key (requires an installation of the R programming language.)
+## Generate figures with "CpG" key (requires an installation of the R programming language.)
 ./defiant -x CpG -a refFlat.txt  -L control,case -l my ̇name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
