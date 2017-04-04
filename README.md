@@ -90,10 +90,15 @@ Defiant is set up to automatically identify and read the following input formats
 
 ## Input Type 1
 Example:	chr1	762	763	0.1764	37
+
 Column1:	chromosome, which is a string.
+
 Column2:	nucleotide, an unsigned integer in [0,4294967295].
+
 Column3:	ignored.
+
 Column4:	methylation percent, a floating point in [0,1].
+
 Column5:	coverage, an unsigned integer, an unsigned integer in [0,4294967295]
 
 ## Input Type 2	known for MethylKit input
