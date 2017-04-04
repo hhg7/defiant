@@ -1,15 +1,7 @@
 # defiant
 Differential methylation: Easy, Fast, Identification and ANnoTation
 
-    ____  ___________________    _   ________
-   / __ \/ ____/ ____/  _/   |  / | / /_  __/
-  / / / / __/ / /_   / // /| | /  |/ / / /   
- / /_/ / /___/ __/ _/ // ___ |/ /|  / / /    
-/_____/_____/_/   /___/_/  |_/_/ |_/ /_/
-
-Differential methylation: Easy, Fast, Identification and ANnoTation
-
- by David E. Condon, University of Pennsylvania, 2015-2017.
+by David E. Condon, University of Pennsylvania, 2015-2017.
 
 
 Help for DEFIANT
