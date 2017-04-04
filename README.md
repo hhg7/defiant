@@ -1,5 +1,5 @@
 # defiant
-**D**ifferential methylation: **E**asy, **F**st, **I**dentification and **AN**no**T**ation
+**D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
 by David E. Condon, University of Pennsylvania, 2015-2017.
 
