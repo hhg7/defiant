@@ -1,11 +1,11 @@
 # defiant
-Differential methylation: Easy, Fast, Identification and ANnoTation
+**D**ifferential methylation: **E**asy, **F**st, **I**dentification and **AN**no**T**ation
 
 by David E. Condon, University of Pennsylvania, 2015-2017.
 
 
-Help for DEFIANT
-Synopsis
+#Help for DEFIANT
+#Synopsis
 ./defiant [OPTIONS]... [FILES]...
 
 where [FILES] is a list of files with spaces separating groups and commas separating replicates within groups. Options are like "-a refFlat.gtf" etc. (cf. Options).
@@ -14,7 +14,7 @@ Minimal example: ./defiant -i control1,control2 case1,case2
 
 All files in should be specified after "-i", where commas separate replicates in the same group.
 
-Options
+#Options
 
 -a	Specify annotation file, e.g. "-a mm10.gtf"
 
@@ -70,7 +70,7 @@ Options
 
 -x	x-axis & legend labels in figures.  "-x" activates "-f" option and requires an R installation. This doesn't accept an argument.
 
-Parallelization
+#Parallelization
 
 As each experiment is different, a different set of parameters may be appropriate for each experiment. You may not know these parameters ahead of time. Thus, defiant has been set to easily test multiple parameters in parallel via a shared-memory model. Parameters underlined and bold faced in Table 1, e.g. p, can be written like a C-style for loop and delimited with commas: ./defiant -p < min >, < max >, < step > which would increment the p-value from min to max in steps of step.
 For example, 
@@ -86,11 +86,11 @@ will run p = 0.01 and then p = 0.05.
 
 The data is read off of the hard drive and into memory, which will then be shared among all the CPU. This is done to make 3D graphs, i.e. x vs. y with the 3rd dimension in color. However, the -D option can be used to vary all parameters as a nested for loop. I strongly recommend not to use the "-f" or "-x" options with multiple runs. One of defiant’s advantages is speed and low resource use, using both "-f" and "-x" options will make the runs take much much longer and potentially create a lot of files which will make I/O on your computer very slow. All DMR counts are then saved to a table, which will end in something like dmr_count.tsv
 
-Input Formats
+#Input Formats
 Defiant is set up to automatically identify and read the following input formats:
 
 
-Input Type 1
+##Input Type 1
 Example:	chr1	762	763	0.1764	37
 Column1:	chromosome, which is a string.
 Column2:	nucleotide, an unsigned integer in [0,4294967295].
@@ -98,7 +98,7 @@ Column3:	ignored.
 Column4:	methylation percent, a floating point in [0,1].
 Column5:	coverage, an unsigned integer, an unsigned integer in [0,4294967295]
 
-Input Type 2	known for MethylKit input
+##Input Type 2	known for MethylKit input
 Example:	chr1.762	chr1	762	R	10000	17.64	82.36
 Column1:	unique name, this is ignored.
 Column2:	chromosome, which is a string.
@@ -108,21 +108,21 @@ Column5:	coverage, an unsigned integer in [0,4294967295].
 Column6:	methylation percent, a floating point in [0,100].
 Column7:	cytosine percent, a floating point in [0,100].
 
-Input Type 3
+##Input Type 3
 Example:	chr1	762	763	0.1764
 Column1:	chromosome, which is a string.
 Column2:	nucleotide, an unsigned integer [0,4294967295].
 Column3:	ignored.
 Column4:	methylation percent, a floating point in [0,1].
 
-Input Type 4
+##Input Type 4
 Example:	chr1	762	6	14
 Column1:	chromosome, which is a string.
 Column2:	nucleotide, an unsigned integer in [0,4294967295].
 Column3:	methylated C count, an unsigned integer in [0,4294967295].
 Column4:	C count, an unsigned integer [0,4294967295].
 
-Input Type 5	Bismark coverage2cytosine format:
+##Input Type 5	Bismark coverage2cytosine format:
 <chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context>//Bismark coverage2cytosine format
 Example:	chr1	762	763	+	17	64	CG	CGA
 Column1:	chromosome, which is a string.
@@ -133,7 +133,7 @@ Column5:	C count, an unsigned integer in [0,4294967295].
 Column6:	C-context, e.g. CG, CH, CHH.
 Column7:	C-context, e.g. CGA, CGT, etc.
 
-Input Type 6	Bismark coverage2cytosine format:
+##Input Type 6	Bismark coverage2cytosine format:
 <chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated>
 Example:	chr1	762	763	0.265625	17	76
 Column1:	chromosome, which is a string.
@@ -143,7 +143,7 @@ Column4:	methylation percentage, which is calculated by Defiant.
 Column5:	methylated C count, an unsigned integer in [0,4294967295].
 Column6:	C count, an unsigned integer in [0,4294967295].
 
-Input Type 7	HELP-Tag data.  This can have a header.
+##Input Type 7	HELP-Tag data.  This can have a header.
 Example:	1 chr1	762	763	0.2656	0.1776
 Column1:	ignored
 Column2:	chromosome, a string.
@@ -151,14 +151,14 @@ Column3:	position, an unsigned integer in [0,4294967295].
 Column4:	methylation percent: a floating point number in [0,1].
 Column5:	Conf. ignored.
 
-Input Type 8	(EPP)Epigenome Processing Pipeline
+##Input Type 8	(EPP)Epigenome Processing Pipeline
 Example:	chr1	762	763	'17/76'	999	+
 Column1:	chromosome, which is a string.
 Column2:	start nucleotide, an unsigned integer in [0,4294967295].
 Column3:	end nucleotide, an unsigned integer in [0,4294967295].
 Column4:	methylation percent as a fraction, two unsigned integers.  Coverage is given as the denominator. Everything after this column is ignored.
 
-Input Type 9	Bsmooth Input
+##Input Type 9	Bsmooth Input
 Example:	X	762	+	CG	17	76
 Column1:	chromosome, which is a string.
 Column2:	Nucleotide, an unsigned integer in [0,4294967295].
@@ -167,14 +167,14 @@ Column4:	context, ignored.
 Column5:	methylated C count, an unsigned integer in [0,4294967295].
 Column6:	C count, an unsigned integer in [0,4294967295].
 
-Input Type 10	BisSNP (found in RnBeads)
+##Input Type 10	BisSNP (found in RnBeads)
 Example:	X	762	763	17.76	82.24	10000	762	763	180,60,0
 Column1:	chromosome, which is a string.Column2:	Nucleotide start, an unsigned integer in [0,4294967295].
 Column3:	Nucleotide end, an unsigned integer in [0,4294967295].
 Column4:	methylation value in [0:100].
 Column5:	Coverage, an unsigned integer in [0,4294967295]. Everything after this column is ignored.
 
-Output
+#Output
 
 The file names are formatted according to the options set at the command line. For example, consider the output file:
 
