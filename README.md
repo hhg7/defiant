@@ -1,7 +1,11 @@
 # defiant
 **D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
-by David E. Condon, University of Pennsylvania, 2015-2017.
+by David E. Condon, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions
+
+# installation
+Download the file github.zip and unzip the file like this on a Linux command line: `unzip github.zip`
+which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
 
 # Synopsis
 ./defiant [OPTIONS]... [FILES]...
@@ -25,6 +29,8 @@ All files in should be specified after "-i", where commas separate replicates in
 -cpu	Set number of CPU when running multiple options, e.g. "-cpu 4". "CPU" is case insensitive and accepts integers > 0.
 
 -d	Minimum differential nucleotide count in a DMR, e.g. "-d 3".  This option can be parallelized.
+
+-debug Turn on debugging mode.  This slows down the execution significantly, but can help diagnose problems if they arise.  This option does not accept any arguments.
 
 -D	Maximum non-default options in a parallel run, e.g. "-D 4"
 
