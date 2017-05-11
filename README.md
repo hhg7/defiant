@@ -1,7 +1,7 @@
 # defiant
 **D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
-by David E. Condon, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions
+by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  The paper has been submitted to a journal for publication and is under review.
 
 # installation
 Download the file github.zip and unzip the file like this on a Linux command line: `unzip github.zip`
