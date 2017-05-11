@@ -4,7 +4,7 @@
 by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  The paper has been submitted to a journal for publication and is under review.
 
 # installation
-Download the file github.zip and unzip the file like this on a Linux command line: `unzip github.zip`
+Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
 which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
 
 # Synopsis
