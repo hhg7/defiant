@@ -48,8 +48,6 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -i	Start reading input files.  This is the only required argument.  All further entries to the command line are assumed to be files.
 
--I	Print isolation of nucleotides in output files. This option does not take an argument.
-
 -l	Set output file(s) label, e.g. "-l new"
 
 -L	give labels for each set in a comma-delimited string, e.g. "-L case,control"
@@ -73,6 +71,8 @@ All files in should be specified after "-i", where commas separate replicates in
 -S	Allow some number of consecutive skips of low coverage, default is 0.  This accepts positive integers, e.g. "-S 1".
 
 -U	Include "Un" chromosomes (default is to ignore them).  This option does not accept an argument.
+
+-v	Print a p-value for each DMR.
 
 -x	x-axis & legend labels in figures.  "-x" activates "-f" option and requires an R installation. This doesn't accept an argument.
 
