@@ -6,7 +6,7 @@ by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  E
 # installation
 Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
 which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
-WARNING: I cannot get defiant to install on Mac systems, as Mac bizarrely switches to `clang` from `gcc` even when `gcc` is specified explicitly.  The problem is that clang doesn't work with `fopenmp`.  If anyone figures out how to solve this, please tell me, because supposed solutions online don't work.
+WARNING: If you're using Mac, use `install_mac.sh`.
 
 # Synopsis
 ./defiant [OPTIONS]... [FILES]...
