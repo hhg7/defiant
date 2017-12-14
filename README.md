@@ -6,7 +6,7 @@ by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  E
 # installation
 Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
 which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
-WARNING: If you're using Mac, use `install_mac.sh`.
+WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
 
 # Synopsis
 ./defiant [OPTIONS]... [FILES]...
