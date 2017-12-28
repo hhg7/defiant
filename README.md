@@ -94,8 +94,10 @@ will run p = 0.01 and then p = 0.05.
 The data is read off of the hard drive and into memory, which will then be shared among all the CPU. This is done to make 3D graphs, i.e. x vs. y with the 3rd dimension in color. However, the -D option can be used to vary all parameters as a nested for loop. I strongly recommend not to use the "-f" or "-x" options with multiple runs. One of defiant’s advantages is speed and low resource use, using both "-f" and "-x" options will make the runs take much much longer and potentially create a lot of files which will make I/O on your computer very slow. All DMR counts are then saved to a table, which will end in something like dmr_count.tsv  This file can be processed with plot_results.pl which will produce a tidy report on how each parameter influences the number of DMRs found.  The perl script plot_results.pl depends on LaTeX and GNUPlot.
 
 # Input Formats
+Input data saves each CpN as a chromosome, a nucleotide number, a count unmethylated, and a count methylated.
+Each CpN is shown as a single line in all input formats.
+The number 4294967295 appears frequently here, and is the maximum unsigned integer value on a 64-bit machine.
 Defiant is set up to automatically identify and read the following input formats:
-
 
 ## Input Type 1
 Example:	chr1	762	763	0.1764	37
