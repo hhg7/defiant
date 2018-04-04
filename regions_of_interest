@@ -1,0 +1,534 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+#include <strings.h>
+
+typedef struct {
+	size_t methylated_C, coverage;
+} DMR_struct;
+
+double Pvalue (DMR_struct **restrict dmr, const unsigned short int *restrict NO_OF_REPLICATES) {//calculate a p-value based on an array
+	size_t methylated_C_1 = 0, methylated_C_2 = 0, coverage1 = 0, coverage2 = 0;
+	for (unsigned short int replicate = 0; replicate < NO_OF_REPLICATES[0]; replicate++) {
+/*		if ((dmr[0][replicate].coverage == 0) || (dmr[0][replicate].methylated_C > dmr[0][replicate].coverage)) {
+			printf("got 5mC/C = %zu / %zu @ %s line %u\n", dmr[0][replicate].methylated_C , dmr[0][replicate].coverage, __FILE__, __LINE__);
+			exit(EXIT_FAILURE);
+		}*/
+		methylated_C_1 += dmr[0][replicate].methylated_C;
+		coverage1 += dmr[0][replicate].coverage;
+	}
+//	printf("@ %s line %u sum = %zu/%zu\n", __FILE__, __LINE__, methylated_C_1, coverage1);
+	for (unsigned short int replicate = 0; replicate < NO_OF_REPLICATES[1]; replicate++) {
+/*		if ((dmr[1][replicate].coverage == 0) || (dmr[1][replicate].methylated_C > dmr[1][replicate].coverage)) {
+			printf("got 5mC/C = %zu / %zu @ %s line %u\n", dmr[1][replicate].methylated_C , dmr[1][replicate].coverage, __FILE__, __LINE__);
+			exit(EXIT_FAILURE);
+		}*/
+		methylated_C_2 += dmr[1][replicate].methylated_C;
+		coverage2 += dmr[1][replicate].coverage;
+	}
+	if ((coverage1 == 0) || (coverage1 == 0)) {
+		return 1;
+	}
+//	printf("@ %s line %u sum = %zu/%zu\n", __FILE__, __LINE__, methylated_C_2, coverage2);
+	if ((NO_OF_REPLICATES[0] == 1) || (NO_OF_REPLICATES[1] == 1)) {//Fisher's exact test
+//		printf("A = %u	B = %u	C = %u	D = %u, coverage1 = %u,	coverage2 = %u\n", A, B, C, D, coverage1, coverage2);
+		return exp(lgamma((double)(methylated_C_1+methylated_C_2+1)) + lgamma((double)(coverage1 - methylated_C_1+coverage2 - methylated_C_2+1)) + lgamma((double)(coverage1+1)) + lgamma((double)(coverage2+1)) - lgamma((double)(methylated_C_1+1)) - lgamma((double)(methylated_C_2+1)) - lgamma((double)(coverage1 - methylated_C_1+1)) - lgamma((double)(coverage2 - methylated_C_2+1)) - lgamma((double)(coverage1 + coverage2 +1)));
+	}
+	const double FMEAN1 = (double)methylated_C_1 / (double)coverage1, FMEAN2 = (double)methylated_C_2 / (double)coverage2;
+//	printf("mean1 = %lf\tmean2 = %lf\n", FMEAN1, FMEAN2);//DEBUGGING
+	if (FMEAN1 == FMEAN2) {
+		return 1.0;//if the means are equal, the p-value is 1, leave the function
+	}
+	double unbiased_sample_variance1 = 0.0, unbiased_sample_variance2 = 0.0;
+	for (unsigned short int replicate = 0; replicate < NO_OF_REPLICATES[0]; replicate++) {//1st part of added unbiased_sample_variance
+		unbiased_sample_variance1 += ((double)dmr[0][replicate].methylated_C/(double)dmr[0][replicate].coverage-FMEAN1)*((double)dmr[0][replicate].methylated_C/(double)dmr[0][replicate].coverage-FMEAN1)*(double)dmr[0][replicate].coverage;
+	}
+	for (unsigned short int replicate = 0; replicate < NO_OF_REPLICATES[1]; replicate++) {
+		unbiased_sample_variance2 += ((double)dmr[1][replicate].methylated_C/(double)dmr[1][replicate].coverage-FMEAN2)*((double)dmr[1][replicate].methylated_C/(double)dmr[1][replicate].coverage-FMEAN2)*(double)dmr[1][replicate].coverage;
+	}
+//	printf("unbiased_sample_variance1 = %lf\tunbiased_sample_variance2 = %lf\n",unbiased_sample_variance1,unbiased_sample_variance2);//DEBUGGING
+	unbiased_sample_variance1 = unbiased_sample_variance1/(double)(coverage1-1);
+	unbiased_sample_variance2 = unbiased_sample_variance2/(double)(coverage2-1);
+	const double WELCH_T_STATISTIC = (FMEAN1-FMEAN2)/sqrt(unbiased_sample_variance1/NO_OF_REPLICATES[0]+unbiased_sample_variance2/NO_OF_REPLICATES[1]);
+	const double DEGREES_OF_FREEDOM = pow((unbiased_sample_variance1/NO_OF_REPLICATES[0]+unbiased_sample_variance2/NO_OF_REPLICATES[1]),2.0)//numerator
+	 /
+	(
+		(unbiased_sample_variance1*unbiased_sample_variance1)/(NO_OF_REPLICATES[0]*NO_OF_REPLICATES[0]*(NO_OF_REPLICATES[0]-1))+
+		(unbiased_sample_variance2*unbiased_sample_variance2)/(NO_OF_REPLICATES[1]*NO_OF_REPLICATES[1]*(NO_OF_REPLICATES[1]-1))
+	);
+	const double a = DEGREES_OF_FREEDOM/2;
+	double value = DEGREES_OF_FREEDOM/(WELCH_T_STATISTIC*WELCH_T_STATISTIC+DEGREES_OF_FREEDOM);
+	if ((isinf(value) != 0) || (isnan(value) != 0)) {
+		return 1.0;
+	}
+	if ((isinf(value) != 0) || (isnan(value) != 0)) {
+		return 1.0;
+	}
+
+/*  Purpose:
+
+    BETAIN computes the incomplete Beta function ratio.
+
+  Licensing:
+
+    This code is distributed under the GNU LGPL license. 
+
+  Modified:
+
+    05 November 2010
+
+  Author:
+
+    Original FORTRAN77 version by KL Majumder, GP Bhattacharjee.
+    C version by John Burkardt.
+
+  Reference:
+
+    KL Majumder, GP Bhattacharjee,
+    Algorithm AS 63:
+    The incomplete Beta Integral,
+    Applied Statistics,
+    Volume 22, Number 3, 1973, pages 409-411.
+
+  Parameters:
+https://www.jstor.org/stable/2346797?seq=1#page_scan_tab_contents
+    Input, double X, the argument, between 0 and 1.
+
+    Input, double P, Q, the parameters, which
+    must be positive.
+
+    Input, double BETA, the logarithm of the complete
+    beta function.
+
+    Output, int *IFAULT, error flag.
+    0, no error.
+    nonzero, an error occurred.
+
+    Output, double BETAIN, the value of the incomplete
+    Beta function ratio.
+*/
+	const double beta = lgamma(a)+0.57236494292470009-lgamma(a+0.5);
+	const double acu = 0.1E-14;
+  double ai;
+  double cx;
+  int indx;
+  int ns;
+  double pp;
+  double psq;
+  double qq;
+  double rx;
+  double temp;
+  double term;
+  double xx;
+
+//  ifault = 0;
+//Check the input arguments.
+  if ( (a <= 0.0)) {// || (0.5 <= 0.0 )){
+//    *ifault = 1;
+//    return value;
+  }
+  if ( value < 0.0 || 1.0 < value )
+  {
+//    *ifault = 2;
+    return value;
+  }
+/*
+  Special cases.
+*/
+  if ( value == 0.0 || value == 1.0 )   {
+    return value;
+  }
+  psq = a + 0.5;
+  cx = 1.0 - value;
+
+  if ( a < psq * value )
+  {
+    xx = cx;
+    cx = value;
+    pp = 0.5;
+    qq = a;
+    indx = 1;
+  }
+  else
+  {
+    xx = value;
+    pp = a;
+    qq = 0.5;
+    indx = 0;
+  }
+
+  term = 1.0;
+  ai = 1.0;
+  value = 1.0;
+  ns = ( int ) ( qq + cx * psq );
+/*
+  Use the Soper reduction formula.
+*/
+  rx = xx / cx;
+  temp = qq - ai;
+  if ( ns == 0 )
+  {
+    rx = xx;
+  }
+
+  for ( ; ; )
+  {
+    term = term * temp * rx / ( pp + ai );
+    value = value + term;;
+    temp = fabs ( term );
+
+    if ( temp <= acu && temp <= acu * value )
+    {
+      value = value * exp ( pp * log ( xx ) 
+      + ( qq - 1.0 ) * log ( cx ) - beta ) / pp;
+
+      if ( indx )
+      {
+        value = 1.0 - value;
+      }
+      break;
+    }
+
+    ai = ai + 1.0;
+    ns = ns - 1;
+
+    if ( 0 <= ns )
+    {
+      temp = qq - ai;
+      if ( ns == 0 )
+      {
+        rx = xx;
+      }
+    }
+    else
+    {
+      temp = psq;
+      psq = psq + 1.0;
+    }
+  }
+  return value;
+}
+
+void help() {
+	puts("This program is run like this:");
+	puts("./roi -c chromosome -s 1701 -e 1864 -f nucleotide.tsv");
+	puts("if start > end, the two integers are switched.");
+}
+
+size_t safe_strtoul (const char *restrict STRING) {
+	if (STRING[0] == '-') {
+		printf("Negative numbers like '%s' can't be fed to unsigned integers @ %s line %u.\n", STRING, __FILE__, __LINE__);
+	}
+	char *endptr;
+	const size_t VALUE = strtoul(STRING, &endptr, 0);
+	if (*endptr) {
+		perror("");
+		printf("The string '%s' failed to convert to a unsigned integer @ %s line %u.\n", STRING, __FILE__, __LINE__);
+		exit(EXIT_FAILURE);
+	}
+	return VALUE;
+}
+
+double mean_percent_difference (DMR_struct **restrict DMR, const unsigned short int *restrict NO_OF_REPLICATES) {
+	size_t methylated_C_sum[] = {0,0};
+	size_t coverage_sum[] = {0,0};
+	for (unsigned short int set = 0; set < 2; set++) {
+		for (unsigned int replicate = 0; replicate < NO_OF_REPLICATES[set]; replicate++) {
+			methylated_C_sum[set] += DMR[set][replicate].methylated_C;
+			coverage_sum[set] += DMR[set][replicate].coverage;
+		}
+	}
+	if ((coverage_sum[0] == 0) || (coverage_sum[1] == 0)) {
+		return 0;//actually undefined
+	}
+	return (double)((double)methylated_C_sum[1]/(double)coverage_sum[1] - (double)methylated_C_sum[0]/(double)coverage_sum[0]);
+}
+int main(int argc, char **restrict argv) {
+	size_t start = 0, end = 0;
+	char *restrict chromosome = NULL;
+	unsigned short int filename = 0;
+	for (unsigned short int loop = 1; loop < argc; loop++) {
+		if (strcmp(argv[loop],"-c") == 0) {
+			if (loop == (argc-1)) {
+				puts("The -c option requires a string representing the chromosome.");
+				exit(EXIT_FAILURE);
+			}
+			chromosome = strdup(argv[loop+1]);
+			loop++;
+		} else if (strcmp(argv[loop], "-e") == 0) {
+			if (loop == (argc-1)) {
+				puts("The -e option requires a string representing the region end.");
+				exit(EXIT_FAILURE);
+			}
+			end = safe_strtoul(argv[loop+1]);
+			loop++;
+		} else if (strcmp(argv[loop], "-f") == 0) {
+			if (loop == (argc-1)) {
+				puts("The -f option requires a string representing the filename.");
+				exit(EXIT_FAILURE);
+			}
+			filename = (unsigned short)(loop+1);
+			loop++;
+		} else if (strcasecmp(argv[loop], "-h") == 0) {
+			help();
+			free(chromosome); chromosome = NULL;
+			exit(EXIT_SUCCESS);
+		} else if (strcmp(argv[loop], "-s") == 0) {
+			if (loop == (argc-1)) {
+				puts("The -s option requires a string representing the region start.");
+				exit(EXIT_FAILURE);
+			}
+			start = safe_strtoul(argv[loop+1]);
+			loop++;
+		} else {
+			printf("%s isn't a recognized option.\n", argv[loop]);
+			exit(EXIT_FAILURE);
+		}
+	}
+//------------------------
+//now perform checks on input parameters to ensure that this works
+//------------------------
+	if (chromosome == NULL) {
+		help();
+		puts("A chromosome must be specified with the '-c' option.");
+		exit(EXIT_FAILURE);
+	}
+	if (filename == 0) {
+		puts("A filename must be specified with the '-f' option.");
+		help();
+		free(chromosome); chromosome = NULL;
+		exit(EXIT_FAILURE);
+	}
+	if (start == 0) {
+		puts("the start was either set at 0 or not defined.");
+		help();
+		free(chromosome); chromosome = NULL;
+		exit(EXIT_FAILURE);
+	}
+	if (end == 0) {
+		puts("the end was either set at 0 or not defined.");
+		help();
+		free(chromosome); chromosome = NULL;
+		exit(EXIT_FAILURE);
+	}
+	if (start > end) {
+		const size_t TEMP = start;
+		start = end;
+		end = TEMP;
+	}
+	printf("The region is %s:%zu-%zu\n", chromosome, start, end);
+	printf("The filename is %s\n", argv[filename]);
+//------------------------
+//finish performing checks on input parameters
+//------------------------
+	FILE *restrict fh = fopen(argv[filename], "r");
+	if (fh == NULL) {
+		perror("");
+		printf("Couldn't open %s\n", argv[filename]);
+		exit(EXIT_FAILURE);
+	}
+	
+	size_t len = 0;
+	ssize_t read = 0;
+	char *line = NULL;
+	_Bool header = 0;
+	size_t struct_size = 2 * sizeof(DMR_struct);
+	size_t struct_sizes[] = {sizeof(DMR_struct), sizeof(DMR_struct)};
+	DMR_struct **restrict region = malloc(struct_size);
+	region[0] = malloc(sizeof(DMR_struct));
+	region[1] = malloc(sizeof(DMR_struct));
+	unsigned short int total_replicates[] = {1,1};//there will be @ least 1 replicate
+	_Bool replicates_found = 0;
+	size_t CpN_found = 0;
+	while ((read = getline(&line, &len, fh)) != -1) {//http://man7.org/linux/man-pages/man3/getline.3.html
+		if (header == 0) {
+			header = 1;//skip header line
+			continue;
+		}
+		char *restrict cell = NULL;
+		char *cell_pointer = NULL;
+		cell = strtok_r(line, "\t", &cell_pointer);//now "cell" is chromosome
+		if (strcmp(cell, chromosome) != 0) {
+			continue;//skip this line if the chromosome doesn't match
+		}
+		cell = strtok_r(NULL, "\t", &cell_pointer);
+		const size_t CpN = safe_strtoul(cell);
+		if (CpN < start) {
+			continue;//I haven't reached the start yet
+		}
+		
+		if (CpN > end) {
+			break;//I reached the end
+		}
+		CpN_found++;
+		cell = strtok_r(NULL, "\t", &cell_pointer);//%difference, discard
+		cell = strtok_r(NULL, "\t", &cell_pointer);//p, discard
+		cell = strtok_r(NULL, "\t", &cell_pointer);//set 1
+		char *restrict set = NULL;
+		char *set_pointer = NULL;
+		set = strtok_r(cell, ",", &set_pointer);
+		region = realloc(region, struct_size);
+		unsigned short int replicate = 0;
+
+//1st set, 1st fraction
+		if (strcmp(set, "X") != 0) {
+			char *restrict n_string1 = NULL;
+			char * npointer1 = NULL;
+			n_string1 = strtok_r(set, "/", &npointer1);//numerator
+			const size_t numerator = safe_strtoul(n_string1);
+			n_string1 = strtok_r(NULL, "/", &npointer1);//denominator
+			const size_t denominator = safe_strtoul(n_string1);
+			if (replicates_found == 0) {
+				region[0][0].methylated_C = numerator;
+				region[0][0].coverage     = denominator;
+			} else {
+				region[0][0].methylated_C += numerator;
+				region[0][0].coverage     += denominator;
+			}
+//			printf("size_t: %zu/%zu\n", numerator, denominator);
+		}
+//1st set, subsequent fractions
+		while (set != NULL) {//for 1st set
+			set = strtok_r(NULL, ",", &set_pointer);
+			if (set == NULL) {
+				break;
+			}
+			replicate++;
+//			printf("replicate = %u\n", replicate);
+			if (replicates_found == 0) {//only do replicates on 1st line of data
+				total_replicates[0]++;
+				struct_size += sizeof(DMR_struct);
+				region       = realloc(region,    struct_size);
+				if (region == NULL) {
+					perror("");
+					printf("realloc failed at %s line %u\n", __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+				}
+				struct_sizes[0] += sizeof(DMR_struct);
+				region[0]        = realloc(region[0], struct_sizes[0]);
+				if (region[0] == NULL) {
+					perror("");
+					printf("realloc failed at %s line %u\n", __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+				}
+			}
+			if (strcmp(set, "X") == 0) {
+				continue;//this means that this replicate wasn't found
+			}
+			char *restrict n_string = NULL;
+			char * npointer = NULL;
+			n_string = strtok_r(set, "/", &npointer);//numerator
+			const size_t numerator = safe_strtoul(n_string);
+			n_string = strtok_r(NULL, "/", &npointer);//denominator
+			const size_t denominator = safe_strtoul(n_string);
+			if (replicates_found == 0) {
+				region[0][replicate].methylated_C = numerator;
+				region[0][replicate].coverage     = denominator;
+			} else {
+				region[0][replicate].methylated_C += numerator;
+				region[0][replicate].coverage     += denominator;
+			}
+/*			printf("size_t: %zu/%zu\n", numerator, denominator);*/
+		}
+		replicate = 0;
+//now do set 2
+		cell = strtok_r(NULL, "\t", &cell_pointer);//set 1
+//		printf("this should be set2: %s\n", cell);
+		set = NULL;
+		set_pointer = NULL;
+		
+		set = strtok_r(cell, ",", &set_pointer);
+		region = realloc(region, struct_size);
+//2nd set, 1st fraction
+		if (strcmp(set, "X") != 0) {
+			char *restrict n_string1 = NULL;
+			char * npointer1 = NULL;
+			n_string1 = strtok_r(set, "/", &npointer1);//numerator
+			const size_t numerator = safe_strtoul(n_string1);
+			n_string1 = strtok_r(NULL, "/", &npointer1);//denominator
+			const size_t denominator = safe_strtoul(n_string1);
+			if (replicates_found == 0) {
+				region[1][0].methylated_C = numerator;
+				region[1][0].coverage     = denominator;
+			} else {
+				region[1][0].methylated_C += numerator;
+				region[1][0].coverage     += denominator;
+			}
+//			printf("size_t: %zu/%zu\n", numerator, denominator);
+		}
+//2nd set, subsequent fractions
+		while (set != NULL) {//for 1st set
+			set = strtok_r(NULL, ",", &set_pointer);
+			if (set == NULL) {
+				break;
+			}
+			replicate++;
+//			printf("replicate = %u\n", replicate);
+			if (replicates_found == 0) {//only do replicates on 1st line of data
+				total_replicates[1]++;
+				struct_size += sizeof(DMR_struct);
+				region       = realloc(region,    struct_size);
+				if (region == NULL) {
+					perror("");
+					printf("realloc failed at %s line %u\n", __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+				}
+				struct_sizes[1] += sizeof(DMR_struct);
+				region[1]        = realloc(region[1], struct_sizes[0]);
+				if (region[1] == NULL) {
+					perror("");
+					printf("realloc failed at %s line %u\n", __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+				}
+			}
+			if (strcmp(set, "X") == 0) {
+				continue;//this means that this replicate wasn't found
+			}
+			char *restrict n_string = NULL;
+			char * npointer = NULL;
+			n_string = strtok_r(set, "/", &npointer);//numerator
+			const size_t numerator = safe_strtoul(n_string);
+			n_string = strtok_r(NULL, "/", &npointer);//denominator
+			const size_t denominator = safe_strtoul(n_string);
+			if (replicates_found == 0) {
+				region[1][replicate].methylated_C = numerator;
+				region[1][replicate].coverage     = denominator;
+			} else {
+				region[1][replicate].methylated_C += numerator;
+				region[1][replicate].coverage     += denominator;
+			}
+//			printf("size_t: %zu/%zu\n", numerator, denominator);/**/
+		}
+		
+		replicates_found = 1;//will only be 0 for the first row
+	}
+	fclose(fh);
+	free(line); line = NULL;
+	free(chromosome); chromosome = NULL;
+	for (unsigned short int set = 0; set < 2; set++) {
+		for (unsigned short int r = 0; r < total_replicates[set]; r++) {
+			if (region[set][r].coverage == 0) {
+				printf("set %u replicate %u had no detected CpN\n", set+1, r+1);
+				puts("other replicates may have missing CpN.");
+				free(region[0]); region[0] = NULL;
+				free(region[1]); region[1] = NULL;
+				free(region); region = NULL;
+				puts("Could not calculate statistics because of missing values.");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
+	if (CpN_found > 0) {
+		printf("%zu CpN found.\n", CpN_found);
+		printf("p = %g\n", Pvalue(region, total_replicates));
+		printf("%%diff = %lf\n", 100.0*mean_percent_difference(region, total_replicates));
+	} else {
+		puts("No CpN found.");
+	}
+	free(region[0]); region[0] = NULL;
+	free(region[1]); region[1] = NULL;
+	free(region); region = NULL;
+	return 0;
+}
