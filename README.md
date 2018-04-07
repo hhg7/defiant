@@ -37,7 +37,7 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -debug	Turn on debugging mode.  This slows down the execution significantly, but can help diagnose problems if they arise.  This option does not accept any arguments.
 
--E	print statistics for every CpN. This option does not take an argument. This slows Defiant down significantly.
+-E	print statistics for every CpN. This option does not take an argument. This slows Defiant down significantly.  This file will start with "nucleotide" and is used as input for the "regions_of_interest" program roi.c.
 
 -f	make EPS figures for each DMR. Warning: requires R installation. This option does not take an argument, and will slow defiant's execution.
 
@@ -222,3 +222,6 @@ indicated in the filename by " S2" if there are 2 allowed skips, for example.
 
 ## Generate figures with "CpG" key (requires an installation of the R programming language.)
 ./defiant -x CpG -a refFlat.txt  -L control,case -l my ̇name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
+
+##regions of interest
+Some users may be interested in only specific regions, which may or not be differentially methylated.  This can be done with the companion program "roi.c" for "regions of interest".  The program is compiled like `gcc -o roi roi.c -lm -Wall -std=gnu11 -Wextra -pedantic -Wconversion` and can be run like `./roi -c chromosome -s 1701 -e 1864 -f nucleotide_label.tsv`.
