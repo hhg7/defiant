@@ -117,7 +117,7 @@ Column3:	nucleotide, an unsigned integer [0,4294967295].
 Column4:	sense, this is ignored.
 Column5:	coverage, an unsigned integer in [0,4294967295].
 Column6:	methylation percent, a floating point in [0,100].
-Column7:	cytosine percent, a floating point in [0,100].
+Column7:	Thymine percent, a floating point in [0,100].   This value is ignored, as the previous is sufficient.
 
 ## Input Type 3
 Example:	chr1	762	763	0.1764
