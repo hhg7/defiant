@@ -3,10 +3,19 @@
 
 by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
+Defiant is designed to be as fast and as easy to use as possible.  It has two citations in its first year!
+
 # installation
 Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
 which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
 WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
+
+# Delta
+
+Defiant v1.1 Changes:
+- removed `-o` option.
+- added `-heatmap` & `-version` options. Defiant can now make heatmaps of the DMRs using `gplots` in R.
+- Now has 11th recognized input format, following https://github.com/hhg7/defiant/issues/5 Defiant now automatically recognizes and reads CGmap input
 
 # Synopsis
 ./defiant [OPTIONS]... [FILES]...
