@@ -1,7 +1,7 @@
 # defiant
 **D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
-by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2017.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
+by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2019.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
 Defiant is designed to be as fast and as easy to use as possible.  It has two citations in its first year!
 
@@ -11,6 +11,10 @@ which opens a file called install.sh  Do this on the command line: `./install.sh
 WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
 
 # Delta
+Defiant v1.1.2 changes:
+- minor improvements to error handling
+- error messages now all print to STDERR, previously printed to STDOUT
+
 Defiant v1.1.1 Changes:
 minor changes to help menu
 
