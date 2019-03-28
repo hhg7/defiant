@@ -12,7 +12,7 @@ WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against u
 
 # Delta
 Defiant v1.1.3 changes (3/27/2019):
-- corrected error in reaading format8
+- corrected error in reading format8
 - does error checking where methylated C count can be greater than coverage.  This will now make the program exit with an error.
 
 Defiant v1.1.2 changes:
