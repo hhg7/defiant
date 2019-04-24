@@ -11,6 +11,9 @@ which opens a file called install.sh  Do this on the command line: `./install.sh
 WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
 
 # Delta
+Defiant v1.1.4 changes (4/23/2019):
+- mutliple genes can now be possible for single DMR
+
 Defiant v1.1.3 changes (3/27/2019):
 - corrected error in reading format8
 - does error checking where methylated C count can be greater than coverage.  This will now make the program exit with an error.
