@@ -1,7 +1,7 @@
 # defiant
 **D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
-by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2019.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
+by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2020.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
 Defiant is designed to be as fast and as easy to use as possible.  It has two citations in its first year!
 
