@@ -12,6 +12,11 @@ WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against u
 
 # Delta
 
+Defiant v1.1.6 changes(21 January 2020):
+ - better error messages
+ - added input file format 12 (Bismark coverage2cytosine)
+ - file type determination now much more thorough
+
 Defiant v1.1.5 changes (11/5/2019):
  - more efficient calculation of Hommel adjusted p-values for `-v` and `-fdr` options. Code is now shorter too.
  
@@ -218,6 +223,27 @@ Column1:	chromosome, which is a string.Column2:	Nucleotide start, an unsigned in
 Column3:	Nucleotide end, an unsigned integer in [0,4294967295].
 Column4:	methylation value in [0:100].
 Column5:	Coverage, an unsigned integer in [0,4294967295]. Everything after this column is ignored.
+
+## Input Type 11	 BSSeeker https://github.com/BSSeeker/BSseeker2
+Example:	chr1	C	3001631	CG	CG	1.0	5	5
+Column1:	chromosome, which is a string.
+Column2:	nucleotide on Watson (+) strand (ignored)
+Column3:	Nucleotide end, an unsigned integer in [0,4294967295]
+Column4:	context (CG/CHG/CHH) (ignored)
+Column5:	dinucleotide-context (CA/CC/CG/CT) (ignored)
+Column6:	methylation-level = #_of_C / (#_of_C + #_of_T)  (ignored)
+Column7:	#_of_C (methylated C, the count of reads showing C here), an unsigned integer in [0,4294967295]
+Column8:	#_of_C + #_of_T (all Cytosines, the count of reads showing C or T here), an unsigned integer in [0,4294967295]
+
+## Input Type 12	<chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context> Bismark coverage2cytosine format
+Column1:	chromosome, doesn't have "chr"
+
+Column2:	position an unsigned integer in [0,4294967295]
+Column3:	strand (+ or -)
+Column4:	count methylated, an unsigned integer in [0,4294967295]
+Column5:	count unmethylated, an unsigned integer in [0,4294967295]
+Column6: C context (ignored)
+Column7: trinucleotide context (ignored)
 
 # Output
 
