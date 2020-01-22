@@ -167,16 +167,16 @@ Column3:	methylated C count, an unsigned integer in [0,4294967295].
 Column4:	C count, an unsigned integer [0,4294967295].
 
 ## Input Type 5	Bismark coverage2cytosine format:
-<chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context>//Bismark coverage2cytosine format
+<chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated><C-context> <trinucleotide context>(https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
 Example:	chr1	762	763	+	17	64	CG	CGA
-
 Column1:	chromosome, which is a string.
-Column2:	nucleotide/start position, an unsigned integer [0,4294967295].
-Column3:	strand.
-Column4:	methylated C count, an unsigned integer in [0,4294967295].
-Column5:	C count, an unsigned integer in [0,4294967295].
-Column6:	C-context, e.g. CG, CH, CHH.
-Column7:	C-context, e.g. CGA, CGT, etc.
+Column2:	nucleotide/start position, an unsigned integer [0,4294967295]
+Column3:	nucleotide/end position, ignored.
+Column4:	strand
+Column5:	methylated C count, an unsigned integer in [0,4294967295]
+Column6:	count unmethylated, an unsigned integer in [0,4294967295]
+Column7:	C-context, e.g. CG, CH, CHH.
+Column8:	C-context, e.g. CGA, CGT, etc.
 
 ## Input Type 6	Bismark coverage2cytosine format:
 <chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated>
