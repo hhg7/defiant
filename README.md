@@ -72,7 +72,7 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -f	make EPS figures for each DMR. Warning: requires R installation. This option does not take an argument, and will slow defiant's execution.
 
--fdr Calculate FDR-adjusted q-value for each CpN.  'FDR' is case insensitive.  This option can take case-insensitive arguments 'fdr' or 'bh' for Benjamini-Hothberg method, 'Bonferroni', 'Hochberg', 'Hommel', 'Holm', or 'BY' for Benjamini & Yekutieli.  If no argument is given, 'Holm' is assumed.  This function is a translation of R's 'p.adjust'.  I recommend against using this as for genome-scale CpG measurements, almost everything will be q = 1 and no DMRs will be obtained in any case.  This option will substantially increase RAM use and slow execution.  'Hommel' is so slow I strongly recommend against it.
+-fdr Calculate FDR-adjusted q-value for each CpN.  'FDR' is case insensitive.  This option can take case-insensitive arguments 'fdr' or 'bh' for Benjamini-Hochberg method, 'Bonferroni', 'Hochberg', 'Hommel', 'Holm', or 'BY' for Benjamini & Yekutieli.  If no argument is given, 'Holm' is assumed.  This function is a translation of R's 'p.adjust'.  I recommend against using this as for genome-scale CpG measurements, almost everything will be q = 1 and no DMRs will be obtained in any case.  This option will substantially increase RAM use and slow execution.  'Hommel' is so slow I strongly recommend against it.
 
 -G	Maximum allowed gap between CpN, e.g. "-G 1000"
 
