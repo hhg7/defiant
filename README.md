@@ -3,7 +3,7 @@
 
 by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2020.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
-Defiant is designed to be as fast and as easy to use as possible.  It has two citations in its first year!
+Defiant is designed to identify differentially methylated regions as quickly and as easily to use as possible.
 
 # installation
 Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
@@ -11,6 +11,11 @@ which opens a file called install.sh  Do this on the command line: `./install.sh
 WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
 
 # Delta
+
+Defiant v1.1.7 changes(9 April 2020):
+ - fixed a possible segfault that can happen with mismatched chromosomes between file groups
+ - no longer prints entire help menu for short error messages
+ - -v and -fdr options now prohibit > 2 groups
 
 Defiant v1.1.6 changes(21 January 2020):
  - better error messages
