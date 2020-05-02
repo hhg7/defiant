@@ -28,7 +28,7 @@ Defiant v1.1.8 changes(1 May 2020)
 Defiant v1.1.7 changes(9 April 2020):
  - fixed a possible segfault that can happen with mismatched chromosomes between file groups
  - no longer prints entire help menu for short error messages
- - -v and -fdr options now prohibit > 2 groups
+ - -v and -fdr options now prohibit > 2 groups (this was corrected in version 1.1.8)
 
 Defiant v1.1.6 changes(21 January 2020):
  - better error messages
