@@ -108,6 +108,8 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -p	Maximum p-value, which is 0<=p<=1.  This option can be parallelized to test multiple options.  Default 0.05.
 
+-paired paired p-values.  Requires that samples match (as it would for a paired or before & after comparison)
+
 -P	Minimum Percent methylation difference (0 <= P <= 100). This option can be parallelized to test multiple options (default 10%).
 
 -q	Promoter cutoff for gene assignment of intergenic DMRs (default 10,000 nucleotides).  This option accepts positive integers, e.g. "-q 15000".
@@ -150,99 +152,90 @@ Defiant is set up to automatically identify and read the following input formats
 
 ## Input Type 1
 Example:	chr1	762	763	0.1764	37
-
 Column1:	chromosome, which is a string.
-Column2:	nucleotide, an unsigned integer in [0,4294967295].
+Column2:	nucleotide, an unsigned integer in [0,4294967295]
 Column3:	ignored.
-Column4:	methylation percent, a floating point in [0,1].
+Column4:	methylation percent, a floating point in [0,1]
 Column5:	coverage, an unsigned integer, an unsigned integer in [0,4294967295]
 
 ## Input Type 2	known for MethylKit input
-Example:	chr1.762	chr1	762	R	10000	17.64	82.36
-
+Example:	chr1.762	chr1	762	R	100	17.64	82.36
 Column1:	unique name, this is ignored.
 Column2:	chromosome, which is a string.
-Column3:	nucleotide, an unsigned integer [0,4294967295].
+Column3:	nucleotide, an unsigned integer [0,4294967295]
 Column4:	sense, this is ignored.
-Column5:	coverage, an unsigned integer in [0,4294967295].
+Column5:	coverage, an unsigned integer in [0,4294967295]
 Column6:	methylation percent, a floating point in [0,100].
-Column7:	Thymine percent, a floating point in [0,100].   This value is ignored, as the previous is sufficient.
+Column7:	cytosine percent, a floating point in [0,100].
 
 ## Input Type 3
 Example:	chr1	762	763	0.1764
-
 Column1:	chromosome, which is a string.
-Column2:	nucleotide, an unsigned integer [0,4294967295].
+Column2:	nucleotide, an unsigned integer [0,4294967295]
 Column3:	ignored.
 Column4:	methylation percent, a floating point in [0,1].
 
 ## Input Type 4
 Example:	chr1	762	6	14
-
 Column1:	chromosome, which is a string.
-Column2:	nucleotide, an unsigned integer in [0,4294967295].
-Column3:	methylated C count, an unsigned integer in [0,4294967295].
-Column4:	C count, an unsigned integer [0,4294967295].
+Column2:	nucleotide, an unsigned integer in [0,4294967295]
+Column3:	methylated C count, an unsigned integer in [0,4294967295]
+Column4:	count unmethylated, an unsigned integer [0,4294967295]
 
-## Input Type 5	Bismark coverage2cytosine format:
-<chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated><C-context> <trinucleotide context>(https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
-Example:	chr1	762	763	+	17	64	CG	CGA
+## Input Type 5	Bismark bismark2bedGraph format:
+<chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context>(https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
+Example:	chr1	762	+	17	64	CG	CGA
 Column1:	chromosome, which is a string.
-Column2:	nucleotide/start position, an unsigned integer [0,4294967295]
-Column3:	nucleotide/end position, ignored.
-Column4:	strand
-Column5:	methylated C count, an unsigned integer in [0,4294967295]
-Column6:	count unmethylated, an unsigned integer in [0,4294967295]
-Column7:	C-context, e.g. CG, CH, CHH.
-Column8:	C-context, e.g. CGA, CGT, etc.
+Column2:	nucleotide position, an unsigned integer [0,4294967295]
+Column3:	strand (+ or -)
+Column4:	methylated C count, an unsigned integer in [0,4294967295]
+Column5:	count unmethylated, an unsigned integer in [0,4294967295]
+Column6:	C-context, e.g. CG, CH, CHH.
+Column7:	C-context, e.g. CGA, CGT, etc.
 
 ## Input Type 6	Bismark coverage2cytosine format:
 <chromosome> <start position> <end position> <methylation percentage> <count methylated> <count unmethylated>
-Example:	chr1	762	763	0.265625	17	76
-
-Column1:	chromosome, which is a string.
-Column2:	nucleotide/start position, an unsigned integer in [0,4294967295].
-Column3:	nucleotide/end position, an unsigned integer in [0,4294967295].
-Column4:	methylation percentage, which is calculated by Defiant.
-Column5:	methylated C count, an unsigned integer in [0,4294967295].
-Column6:	C count, an unsigned integer in [0,4294967295].
+Example:	chr1	762	763	0.223684	17	76
+Column1:	chromosome, which is a string
+Column2:	nucleotide/start position, an unsigned integer in [0,4294967295]
+Column3:	nucleotide/end position, an unsigned integer in [0,4294967295]
+Column4:	methylation percentage in [0,1]
+Column5:	methylated C count, an unsigned integer in [0,4294967295]
+Column6:	count unmethylated, an unsigned integer in [0,4294967295]
 
 ## Input Type 7	HELP-Tag data.  This can have a header.
 Example:	1 chr1	762	763	0.2656	0.1776
-
 Column1:	ignored
-Column2:	chromosome, a string.
-Column3:	position, an unsigned integer in [0,4294967295].
-Column4:	methylation percent: a floating point number in [0,1].
+Column2:	chromosome, a string
+Column3:	position, an unsigned integer in [0,4294967295]
+Column4:	methylation percent: a floating point number in [0,1]
 Column5:	Conf. ignored.
 
 ## Input Type 8	(EPP)Epigenome Processing Pipeline
 Example:	chr1	762	763	'17/76'	999	+
-
 Column1:	chromosome, which is a string.
-Column2:	start nucleotide, an unsigned integer in [0,4294967295].
-Column3:	end nucleotide, an unsigned integer in [0,4294967295].
-Column4:	methylation percent as a fraction, two unsigned integers.  Coverage is given as the denominator. Everything after this column is ignored.
+Column2:	start nucleotide, an unsigned integer in [0,4294967295]
+Column3:	end nucleotide, an unsigned integer in [0,4294967295]
+Column4:	methylation percent as a fraction, two unsigned integers.  Coverage is given as the denominator. Everything after column 4 is ignored.
 
 ## Input Type 9	Bsmooth Input
 Example:	X	762	+	CG	17	76
-
 Column1:	chromosome, which is a string.
-Column2:	Nucleotide, an unsigned integer in [0,4294967295].
-Column3:	strand sense, ignored.
-Column4:	context, ignored.
-Column5:	methylated C count, an unsigned integer in [0,4294967295].
-Column6:	C count, an unsigned integer in [0,4294967295].
+Column2:	Nucleotide, an unsigned integer in [0,4294967295]
+Column3:	strand sense, ignored
+Column4:	context, ignored
+Column5:	methylated C count, an unsigned integer in [0,4294967295]
+Column6:	coverage, an unsigned integer in [0,4294967295]
 
 ## Input Type 10	BisSNP (found in RnBeads)
-Example:	X	762	763	17.76	82.24	10000	762	763	180,60,0
-
-Column1:	chromosome, which is a string.Column2:	Nucleotide start, an unsigned integer in [0,4294967295].
-Column3:	Nucleotide end, an unsigned integer in [0,4294967295].
+Example:	X	762	763	10.96	1918	762	763	180,60,0	0	0
+Column1:	chromosome, which is a string.
+Column2:	Nucleotide start, an unsigned integer in [0,4294967295]
+Column3:	Nucleotide end, an unsigned integer in [0,4294967295]
 Column4:	methylation value in [0:100].
 Column5:	Coverage, an unsigned integer in [0,4294967295]. Everything after this column is ignored.
 
-## Input Type 11	 BSSeeker https://github.com/BSSeeker/BSseeker2
+## Input Type 11	 CGmap file from BSSeeker https://github.com/BSSeeker/BSseeker2
 Example:	chr1	C	3001631	CG	CG	1.0	5	5
 Column1:	chromosome, which is a string.
 Column2:	nucleotide on Watson (+) strand (ignored)
@@ -252,18 +245,6 @@ Column5:	dinucleotide-context (CA/CC/CG/CT) (ignored)
 Column6:	methylation-level = #_of_C / (#_of_C + #_of_T)  (ignored)
 Column7:	#_of_C (methylated C, the count of reads showing C here), an unsigned integer in [0,4294967295]
 Column8:	#_of_C + #_of_T (all Cytosines, the count of reads showing C or T here), an unsigned integer in [0,4294967295]
-
-## Input Type 12	<chromosome> <position> <strand> <count methylated> <count unmethylated> <C-context> <trinucleotide context> Bismark coverage2cytosine format
-Column1:	chromosome, doesn't have "chr"
-
-Column2:	position an unsigned integer in [0,4294967295]
-Column3:	strand (+ or -)
-Column4:	count methylated, an unsigned integer in [0,4294967295]
-Column5:	count unmethylated, an unsigned integer in [0,4294967295]
-Column6: C context (ignored)
-Column7: trinucleotide context (ignored)
-
-# Output
 
 The file names are formatted according to the options set at the command line. For example, consider the output file:
 
