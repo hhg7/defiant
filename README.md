@@ -12,6 +12,19 @@ WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against u
 
 # Delta
 
+Defiant v1.1.8 changes(1 May 2020)
+- correction in identification and reading of file type 5 from Bismark, eliminated redundant input type 12
+- correction in reading input type 9 (BSmooth): last column is coverage, not non-methylated C
+- corrected possible segfault in calculation of Hommel FDR
+- corrected possible segfault in labeling chromosome changes
+- corrected possible segfault when chromosome has no match in opposite group or is too sparse to use
+- improved & shortened help menu
+- chromosome names are no longer limited to 96 characters -> should result in modest RAM reduction for most users.  The character limit still exists with annotation, however.  This will not affect most users.
+- corrected possible segfault with > 2 groups and using one of the multiple testing corrections
+- less text printed out that most users probably aren't interested in anyway
+- seeing how various cutoffs perform is now done for each comparison set
+- paired p-values are now available for > 2 sets
+
 Defiant v1.1.7 changes(9 April 2020):
  - fixed a possible segfault that can happen with mismatched chromosomes between file groups
  - no longer prints entire help menu for short error messages
