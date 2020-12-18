@@ -3,7 +3,7 @@
 
 by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2020.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
-Defiant is designed to identify differentially methylated regions as quickly and as easily as possible.
+Defiant is designed to identify differentially methylated regions as quickly and as easily as possible.  It was designed to make the process as easy as possible on the end user, and to enable DMR detection without having to use (and pay for) supercomputing resources.
 
 # installation
 Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
@@ -11,6 +11,11 @@ which opens a file called install.sh  Do this on the command line: `./install.sh
 WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
 
 # Delta
+
+Defiant v1.1.9 changes (17 December 2020)
+- fixed possible segmentation fault with -fdr option
+- "chr" is no longer required with input file chromosome names.  Incidentally, this allows a slightly faster determination of file type. Now, users who have files with chromosomes names that don't have "chr", e.g. "NW_017547083.1", do not have to alter their files to work with Defiant.
+- various stylistic/readability improvememts to plot_results.pl, which should work slightly faster and use slightly less memory than before
 
 Defiant v1.1.8 changes(1 May 2020)
 - correction in identification and reading of file type 5 from Bismark, eliminated redundant input type 12
