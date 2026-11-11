@@ -1,16 +1,37 @@
 # defiant
 **D**ifferential methylation: **E**asy, **F**ast, **I**dentification and **AN**no**T**ation
 
-by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2020.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
+by David E. Condon and Kyoung-Jae Won, University of Pennsylvania, 2015-2026.  Email Dave at dec986@gmail.com with questions/complaints/suggestions.  This has been published in BMC Bioinformatics: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2037-1
 
 Defiant is designed to identify differentially methylated regions as quickly and as easily as possible.  It was designed to make the process as easy as possible on the end user, and to enable DMR detection without having to use (and pay for) supercomputing resources.
 
 # installation
-Download the file defiant.zip and unzip the file like this on a Linux command line: `unzip defiant.zip`
-which opens a file called install.sh  Do this on the command line: `./install.sh` which will compile an executable "defiant" for your system.
-WARNING: If you're using Mac, use `install_mac.sh`. _I strongly advise against using Mac, however.  I have found Mac to be significantly less reliable and usable than Linux.  Also, the multi-processing capability is absent with the Mac version as GCC and omp.h cannot work under Mac._
+Download the repository and compile it with `make` on a Linux command line:
+
+`git clone https://github.com/hhg7/defiant && cd defiant && make`
+
+which will compile an executable "defiant" for your system.  `make check` runs a quick test of the executable, and `make install` copies it to /usr/local/bin (`make install PREFIX=$HOME/.local` if you don't have root).  `make OPENMP=1` compiles Defiant to run multiple options on multiple CPU (cf. `-cpu`), and `make CC=clang` compiles with clang instead of gcc.  The Makefile lists other targets, e.g. `make debug`, at its top.
+
+WARNING: Mac no longer needs separate files, `make CC=clang` compiles the same source.
 
 # Delta
+
+Defiant v1.2 changes (11 November 2026)
+- installation is now done with `make` instead of install.sh and install_mac.sh; defiant_mac.c is no longer needed
+- all changes from v1.1.9 are kept, including chromosome names of any length and input files without "chr"
+- the 2 strands of a CpG are only added together when the + strand is followed by the - strand at the next nucleotide, and minimum coverage is checked after both strands are added
+- percent methylation is rounded to the nearest read instead of truncated, e.g. 0.4666 * 15 is now 7 reads, not 6
+- `-fdr`: only CpN with minimum coverage in every replicate are counted as tests; the others get q = 1.  With no argument, BH is used, which is what the program already did; the help menu wrongly said Holm.
+- `-a`: GTF & GFF3 gene names are now read from `gene_name`, `gene_id`, `gene` or `Name` wherever they are in the line; a '#' is only a comment at the start of a line; genes with the same name on different chromosomes are no longer merged; a long gene containing several DMRs is no longer skipped; fixed a segmentation fault
+- `-a` with refFlat: the sorted annotation is written to a unique temporary file in $TMPDIR (or /tmp), so two Defiant jobs can run at once, and filenames with spaces work
+- `-heatmap`: fixed a buffer overflow in the filename, the R script now uses the "Gene.Name" column that the table has, and a replicate with 0 coverage no longer writes "nan"
+- output filenames: p < 0.01 is no longer rounded to "p0.00", e.g. "p0.001"; `-S inf` is written "Sinf" instead of "S∞"; the `-l` label is now in bed & heatmap filenames, and multiple runs no longer write over each other's bed & `-E` files
+- `-r` values above 65535 no longer wrap around; `-q`, `-r`, `-D`, `-l` and `-S` stop with an error if nothing follows them
+- `-D` default is now 6, so that all 6 cutoffs can be non-default
+- Windows line endings ("\r\n") are now accepted in all input files
+- Fisher's exact p-value can no longer be slightly > 1 from rounding, which stopped the `-v` & `-fdr` calculations
+- data is read into memory in large blocks instead of one line at a time
+- many smaller memory errors, found with valgrind and AddressSanitizer, are corrected
 
 Defiant v1.1.9 changes (17 December 2020)
 - fixed possible segmentation fault with -fdr option
@@ -81,7 +102,7 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -CpN	minimum CpN/CpG/CH/CHH in a DMR, e.g. "-CpN 10".  This option accepts positive integers and can parallelized.  "CpN" is case insensitive.
 
--cpu	Set number of CPU when running multiple options, e.g. "-cpu 4". "CPU" is case insensitive and accepts integers > 0.
+-cpu	Set number of CPU when running multiple options, e.g. "-cpu 4". "CPU" is case insensitive and accepts integers > 0.  Runs are executed in parallel only if Defiant was compiled with `make OPENMP=1`.
 
 -d	Minimum differential nucleotide count in a DMR, e.g. "-d 3".  This option can be parallelized.
 
@@ -95,7 +116,7 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -f	make EPS figures for each DMR. Warning: requires R installation. This option does not take an argument, and will slow defiant's execution.
 
--fdr Calculate FDR-adjusted q-value for each CpN.  'FDR' is case insensitive.  This option can take case-insensitive arguments 'fdr' or 'bh' for Benjamini-Hochberg method, 'Bonferroni', 'Hochberg', 'Hommel', 'Holm', or 'BY' for Benjamini & Yekutieli.  If no argument is given, 'Holm' is assumed.  This function is a translation of R's 'p.adjust'.  I recommend against using this as for genome-scale CpG measurements, almost everything will be q = 1 and no DMRs will be obtained in any case.  This option will substantially increase RAM use and slow execution.  'Hommel' is so slow I strongly recommend against it.
+-fdr Calculate FDR-adjusted q-value for each CpN.  'FDR' is case insensitive.  This option can take case-insensitive arguments 'fdr' or 'bh' for Benjamini-Hochberg method, 'Bonferroni', 'Hochberg', 'Hommel', 'Holm', or 'BY' for Benjamini & Yekutieli.  If no argument is given, 'BH' is assumed.  This function is a translation of R's 'p.adjust'.  I recommend against using this as for genome-scale CpG measurements, almost everything will be q = 1 and no DMRs will be obtained in any case.  This option will substantially increase RAM use and slow execution.  'Hommel' is so slow I strongly recommend against it.
 
 -G	Maximum allowed gap between CpN, e.g. "-G 1000"
 
@@ -123,9 +144,9 @@ All files in should be specified after "-i", where commas separate replicates in
 
 -R	include "Random" chromosomes.  This option does not accept an argument.
 
--s	Maximum allowed consecutive similar CpN, default is 5 CpN.  This accepts non-negative integers, e.g. "-s 3".
+-s	Maximum allowed consecutive similar CpN, default is 6 CpN.  This accepts non-negative integers, e.g. "-s 3".
 
--S	Allow some number of consecutive skips of low coverage, default is 0.  This accepts positive integers, e.g. "-S 1".
+-S	Allow some number of consecutive skips of low coverage, default is 0.  This accepts positive integers, e.g. "-S 1", or "-S inf" for no limit.
 
 -U	Include "Un" chromosomes (default is to ignore them).  This option does not accept an argument.
 
@@ -274,10 +295,10 @@ indicated in the filename by " S2" if there are 2 allowed skips, for example.
 2. ./defiant -L control,case -l my_name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
 ## Annotation:
-./defiant -a refFlat.txt -L control,case -l my ̇name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
+./defiant -a refFlat.txt -L control,case -l my_name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
 ## Generate figures with "CpG" key (requires an installation of the R programming language.)
-./defiant -x CpG -a refFlat.txt  -L control,case -l my ̇name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
+./defiant -x CpG -a refFlat.txt  -L control,case -l my_name -i control1.txt,control2.txt case1.txt,case2.txt,case3.txt
 
 ##regions of interest
 Some users may be interested in only specific regions, which may or not be differentially methylated.  This can be done with the companion program "roi.c" for "regions of interest".  The program is compiled like `gcc -o roi roi.c -lm -Wall -std=gnu11 -Wextra -pedantic -Wconversion` and can be run like `./roi -c chromosome -s 1701 -e 1864 -f nucleotide_label.tsv`.
